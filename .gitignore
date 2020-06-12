@@ -10,3 +10,5 @@ Debug/
 *.ewd
 
 *.ewt
+
+.DS_Store
