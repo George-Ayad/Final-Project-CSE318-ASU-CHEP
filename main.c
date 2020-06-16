@@ -121,7 +121,7 @@ void KEYPAD_HANDLER(void){
 	
 	pinwrite(PB2, LOW);
 	pinwrite(PB3, LOW);
-	delay_ms(100);
+	SysCtlDelay(533333);
 	
 	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
 	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
