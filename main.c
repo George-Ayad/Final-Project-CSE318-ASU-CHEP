@@ -10,11 +10,10 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/timer.h"
 #include "driverlib/systick.h"
-#include "drivers/pinout.h"
+//#include "drivers/pinout.h"
 #include "inc/hw_ints.h"
 #include "inc/hw_nvic.h"
-#include "uC.h"
-
+#include "gpio.h" 
 
 //------------ Global Variables -------------
 uint32_t g_ui32SysClock ;
@@ -33,7 +32,7 @@ char State = 'm' ;
 //------------ FUNCTIONS -------------
 void PAUSE();
 void STOP();
-void CLEAR();
+void CLEART();
 void START();
 void WELCOME();
 void ENDSEQUENCE();
@@ -47,6 +46,107 @@ void TIMER0AINIT();
 void TIMER1AINIT();
 uint32_t ATI(char I[10]);
 void UARTINIT();
+void UARTIntHandler(void);
+void GPIO_HANDLER(void);
+char keypad_scanner(void);
+void delay_ms(int nCount);
+void GPIOINIT();
+
+
+char keypad_scanner(void)  {           
+	pinwrite(PB2, LOW);
+	pinwrite(PB3, HIGH);
+
+	if (pinread(PB4) == 0) { UARTprintf("1 \n"); return '1'; }
+	if (pinread(PB5) == 0) { UARTprintf("2 \n"); return '2'; }
+	if (pinread(PB6) == 0) { UARTprintf("3 \n"); return '3'; }
+	if (pinread(PB7) == 0) { UARTprintf("4 \n"); return '4'; }
+	
+	pinwrite(PB2, HIGH);
+	pinwrite(PB3, LOW);
+
+	if (pinread(PB4) == 0) { UARTprintf("5 \n"); return '5'; }
+	if (pinread(PB5) == 0) { UARTprintf("6 \n"); return '6'; }
+	if (pinread(PB6) == 0) { UARTprintf("7 \n"); return '7'; }
+	if (pinread(PB7) == 0) { UARTprintf("8 \n"); return '8'; }
+	
+	return('\0');
+}
+
+
+void GPIO_HANDLER(void){
+	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_0);
+	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_4);
+	if (pinread(PushButton1) == 1) {
+		if(State=='g'){GRILLSTART();}
+		if(State=='m'){MICROWAVESTART();}
+	}
+	if (pinread(PushButton2) == 1) {
+		TimerEnable(TIMER1_BASE, TIMER_A); 
+	}
+}
+
+
+void KEYPAD_HANDLER(void){
+	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
+	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
+	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_6);
+	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_7);
+	char AA = '5';
+	AA = keypad_scanner();
+	if(AA == '1'){SECONDS+=10;UARTprintf("SECONDS = %d ", SECONDS);}// 10 SECONDS
+	if(AA == '2'){SECONDS+=60;UARTprintf("SECONDS = %d ", SECONDS);}// 1 MINUTE
+	if(AA == '3'){SECONDS+=1800;UARTprintf("SECONDS = %d ", SECONDS);}// 30 MINUTES
+	if(AA == '4'){if(State=='m')MICROWAVESTART();if(State=='g')GRILLSTART();}
+	if(AA == '5'){MICROWAVEIDLE();}// MICROWAVE IDLE
+	if(AA == '6'){GRILLIDLE();}// GRILL IDLE 
+	if(AA == '8'){if(State=='m' || State=='g')STOP();if(State=='M' || State=='G')PAUSE();}   
+}
+
+
+void delay_ms(int nCount){ /* Wait function */ 
+	nCount=nCount*16000; 
+	while (nCount--);
+}
+
+
+void GPIOINIT(){
+    // ON-BOARD
+	pinmode(RLED, OUTPUT);
+	pinmode(GLED, OUTPUT);
+	pinmode(BLED, OUTPUT);
+	pinmode(PushButton2, PULLUP);
+	pinmode(PushButton1, PULLUP);
+	
+	// KEYPAD
+	pinmode(PB2, OUTPUT);
+	pinmode(PB3, OUTPUT);
+	pinmode(PB4, PULLUP);
+	pinmode(PB5, PULLUP);
+	pinmode(PB6, PULLUP);
+	pinmode(PB7, PULLUP);
+	
+	// ON-BOARD INTERRUPTS
+	GPIOIntTypeSet(GPIO_PORTF_BASE,GPIO_PIN_0 ,GPIO_FALLING_EDGE);
+	GPIOIntTypeSet(GPIO_PORTF_BASE,GPIO_PIN_4 ,GPIO_FALLING_EDGE);
+	GPIOIntRegister(GPIO_PORTF_BASE,GPIO_HANDLER);
+	GPIOIntEnable(GPIO_PORTF_BASE,GPIO_INT_PIN_0);
+	GPIOIntEnable(GPIO_PORTF_BASE,GPIO_INT_PIN_4);
+	
+	// KEYPAD INTERRUPTS
+	GPIOIntTypeSet(GPIO_PORTB_BASE,GPIO_PIN_4, GPIO_FALLING_EDGE);
+	GPIOIntTypeSet(GPIO_PORTB_BASE,GPIO_PIN_5, GPIO_FALLING_EDGE);
+	GPIOIntTypeSet(GPIO_PORTB_BASE,GPIO_PIN_6, GPIO_FALLING_EDGE);
+	GPIOIntTypeSet(GPIO_PORTB_BASE,GPIO_PIN_7, GPIO_FALLING_EDGE);
+	GPIOIntRegister(GPIO_PORTB_BASE,KEYPAD_HANDLER);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_6);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_7);
+	
+	pinwrite(PB2, LOW);
+	pinwrite(PB3, LOW);
+}
 
 
 void PAUSE(){
@@ -62,18 +162,13 @@ void STOP(){
 	if(State == 'M')MICROWAVEIDLE();
 	if(State == 'G')GRILLIDLE();
 	UARTprintf("Remaining Time = %d ", SECONDS);
-	Clear();
+	CLEART();
 }
 
 
-void CLEAR(){
+void CLEART(){
 	SECONDS = 0 ;
 	UARTprintf("Timer cleared \n");
-}
-
-
-void START(){
-
 }
 
 
@@ -89,60 +184,78 @@ void WELCOME(){
 
 void ENDSEQUENCE(){
 	// Flash RLED 5 times
-	if(State = 'M') MICROWAVEIDLE(); 
-	else if(State = 'G') GRILLIDLE();
+	pinwrite(GLED, LOW);
+	pinwrite(BLED, LOW);
+	for(int i = 0; i < 5; i++){
+		pinwrite(RLED, HIGH);
+		delay_ms(100);
+		pinwrite(RLED, LOW);
+		delay_ms(100);
+	}
+	// Return to idle states 
+	if(State == 'M') MICROWAVEIDLE(); 
+	else if(State == 'G') GRILLIDLE();
 	else MICROWAVEIDLE();
 }
 
 
 void MICROWAVEIDLE(){
 	State = 'm';
-	UARTprintf("MICROWAVE MODE \n ");
+	UARTprintf("\n MICROWAVE MODE \n ");
 	UARTprintf("S -> start \n ");
 	UARTprintf("C -> clear counter \n ");
 	UARTprintf("G -> switch to grill \n ");
-	UARTprintf("Enter any number of seconds to set counter \n ");	 
-	// Turn on BLED 
+	UARTprintf("Enter any number of seconds to set counter \n ");
+	pinwrite(GLED, LOW);
+	pinwrite(BLED, HIGH);
 }
 
 
 void MICROWAVESTART(){
+    pinwrite(BLED, HIGH);
 	State = 'M';
+    UARTprintf("\n ------- Microwave Started \n ");
 	UARTprintf("P -> pause \n ");
 	UARTprintf("S -> STOP \n ");
-	TimerEnable(TIMER0_BASE, TIMER_A); 
+	TimerEnable(TIMER0_BASE, TIMER_A);
+	pinwrite(GLED, LOW);
+	pinwrite(BLED, HIGH);
 }
 
 
 void GRILLIDLE(){
 	State = 'g';
-	UARTprintf("GRILL MODE \n ");
+	UARTprintf("\n GRILL MODE \n ");
 	UARTprintf("S -> start \n ");
 	UARTprintf("C -> clear counter \n ");
 	UARTprintf("M -> switch to microwave \n ");
 	UARTprintf("Enter any number of seconds to set counter \n ");
-	// Turn on GLED
+	pinwrite(BLED, LOW);
+	pinwrite(GLED, HIGH);
 }
 
 
 void GRILLSTART(){
 	State = 'G';
+	UARTprintf("\n ------- Grill Started \n ");
 	UARTprintf("P -> pause \n ");
 	UARTprintf("S -> STOP \n ");
 	TimerEnable(TIMER0_BASE, TIMER_A);
+	pinwrite(BLED, LOW);
+	pinwrite(GLED, HIGH);
 }
 
 
 void TIMER0AINIT(){
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 	TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
-	TimerLoadSet(TIMER0_BASE, TIMER_A, g_ui32SysClock);
+	TimerLoadSet(TIMER0_BASE, TIMER_A, 16000000);
 	IntEnable(INT_TIMER0A);
 	TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-	IntPrioritySet( INT_TIMER0A , 0);
+	IntPrioritySet( INT_TIMER0A , 4);
 	IntRegister( INT_TIMER0A , TIMER0A_HANDLER);
 	TimerIntRegister( INT_TIMER0A, TIMER_A, TIMER0A_HANDLER);
-	}
+}
 
 
 void TIMER1AINIT(){
@@ -174,23 +287,24 @@ void UARTINIT(){
 	UARTIntRegister(UART0_BASE,  UARTIntHandler);
 
 	//UARTEnable(GPIO_PORTA_BASE);
-	UARTStdioConfig(0, 9600 , 120000000);
+	UARTStdioConfig(0, 9600 , 16000000);
 }
 
 
 void TIMER1A_HANDLER(){
-	STOP();
-	UARTprintf("TIMER CLEARED \n");
+	if(pinread(PushButton2) == 1){
+		STOP();
+		UARTprintf("TIMER CLEARED \n");
+	}
 }
 
 
 void TIMER0A_HANDLER(){
 	TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-	TimerEnable(TIMER0_BASE, TIMER_A);  
-
+	TimerEnable(TIMER0_BASE, TIMER_A);
 	if(State == 'M' || State == 'G'){
 		if (SECONDS > 0){
-			UARTprintf("\r  %d s", SECONDS);
+			UARTprintf("\r %d s", SECONDS);
 			SECONDS--;
 		}
 
@@ -201,7 +315,6 @@ void TIMER0A_HANDLER(){
 		}
 	}
 }
-
 
 // ASCII String to integer conversion
 uint32_t ATI(char I[10]){
@@ -219,8 +332,8 @@ uint32_t ATI(char I[10]){
 
 void UARTIntHandler(void){
 	uint32_t ui32Status;
-	char pc[10], c;
-	char f ;
+	char pc[10];
+	char f = '0';
 
 	// Get the interrrupt status.
 	ui32Status = UARTIntStatus(UART0_BASE, true);
@@ -240,8 +353,8 @@ void UARTIntHandler(void){
 			i++;
 		}
 	}
-	pc[i]= '/0' ;
-	UARTprintf("wsl b salam ya s3at el basha : %s /n", pc);
+	pc[i] = '\0' ;
+	UARTprintf("wsl b salam ya s3at el basha : %s \n", pc);
 
 	// State based action decision tree
 	if(State == 'M'){
@@ -260,7 +373,7 @@ void UARTIntHandler(void){
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft");
+			UARTprintf("aktb 3edl ya zeft \n");
 		}
 	}
 
@@ -280,7 +393,7 @@ void UARTIntHandler(void){
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft");
+			UARTprintf("aktb 3edl ya zeft \n");
 		}
 	}
 
@@ -289,7 +402,7 @@ void UARTIntHandler(void){
 		if(pc[0] <= '9'  && pc[0] >= '0' ){
 			// Timer adjust
 			SECONDS = ATI(pc);
-			UARTprintf("SECONDS = %d ", SECONDS);
+			UARTprintf("SECONDS = %d \n", SECONDS);
 		}
 
 		else if(pc[0] == 'S' ){
@@ -301,10 +414,20 @@ void UARTIntHandler(void){
 			// Clear timer
 			STOP();
 		}
+                
+                else if(pc[0] == 'M' ){
+			// Set to microwave
+			MICROWAVEIDLE();
+		}
+                
+                else if(pc[0] == 'G' ){
+			// Set to grill
+			GRILLIDLE();
+		}
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft");
+			UARTprintf("aktb 3edl ya zeft \n");
 		}
 	}
 
@@ -313,7 +436,7 @@ void UARTIntHandler(void){
 		if(pc[0] <= '9'  && pc[0] >= '0' ){
 			// Timer adjust
 			SECONDS = ATI(pc);
-			UARTprintf("SECONDS = %d ", SECONDS);
+			UARTprintf("SECONDS = %d \n", SECONDS);
 		}
 
 		else if(pc[0] == 'S' ){ 
@@ -325,10 +448,20 @@ void UARTIntHandler(void){
 			// Clear timer
 			STOP();
 		}
+                
+                else if(pc[0] == 'M' ){
+			// Set to microwave
+			MICROWAVEIDLE();
+		}
+                
+                else if(pc[0] == 'G' ){
+			// Set to grill
+			GRILLIDLE();
+		}
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft");
+			UARTprintf("aktb 3edl ya zeft \n");
 		}
 	}
 }
@@ -336,12 +469,14 @@ void UARTIntHandler(void){
 
 int main(){
 	// ---------- CLOCK SET-UP ----------
-	g_ui32SysClock = SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |SYSCTL_OSC_MAIN |SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480), 120000000);
+	g_ui32SysClock = SysCtlClockFreqSet((SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN), 16000000);
+
 
 	// ---------- INITIALIZATIONS ----------
 	IntMasterEnable();
 	TIMER0AINIT();
 	UARTINIT();
+	GPIOINIT();
 	
 	// ---------- START SEQUENCE ----------
 	WELCOME();
