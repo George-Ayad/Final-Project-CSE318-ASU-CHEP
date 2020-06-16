@@ -494,14 +494,20 @@ void UARTIntHandler(void){
 int main(){
 	// ---------- CLOCK SET-UP ----------
 	g_ui32SysClock = SysCtlClockFreqSet((SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN), 16000000);
-
-
+    SysTickPeriodSet(16000000);      
+	SysTickEnable();
+	// uint32_t Value = SysTickValueGet();
+	// UARTprintf("%d",Value);
+	
+	
 	// ---------- INITIALIZATIONS ----------
 	IntMasterEnable();
 	TIMER0AINIT();
 	TIMER1AINIT();
 	UARTINIT();
 	GPIOINIT();
+	// Value = SysTickValueGet();
+	// UARTprintf("%d",Value);
 	
 	// ---------- START SEQUENCE ----------
 	WELCOME();

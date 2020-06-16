@@ -1,0 +1,486 @@
+###############################################################################
+#
+# IAR ELF Linker V8.40.1.212/W32 for ARM                  17/Jun/2020  00:49:24
+# Copyright 2007-2019 IAR Systems AB.
+#
+#    Output file  =
+#        C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\Exe\Final-Project-CSE318-ASU-CHEP.out
+#    Map file     =
+#        C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\List\Final-Project-CSE318-ASU-CHEP.map
+#    Command line =
+#        -f C:\Users\PC-GEO~1\AppData\Local\Temp\EWE5D6.tmp
+#        ("C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\Obj\gpio.o"
+#        "C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\Obj\main.o"
+#        "C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\Obj\uartstdio.o"
+#        --no_out_extension -o "C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\Exe\Final-Project-CSE318-ASU-CHEP.out"
+#        --redirect _Printf=_PrintfFullNoMb --redirect _Scanf=_ScanfFullNoMb
+#        --map "C:\Users\Pc-george\Documents\IAR
+#        Systems\Final-Project-CSE318-ASU-CHEP\Debug\List\Final-Project-CSE318-ASU-CHEP.map"
+#        --config "E:\IAR
+#        Systems\arm\config\linker\TexasInstruments\TM4C123GH6.icf"
+#        --semihosting "E:\TivaWare Libraries\driverlib\ewarm\Exe\driverlib.a"
+#        --entry __iar_program_start --vfe --enable_stack_usage --text_out
+#        locale)
+#
+###############################################################################
+
+*******************************************************************************
+*** MESSAGES
+***
+
+Warning[Lt009]: Inconsistent wchar_t size
+            gpio.o(driverlib.a) and 6 other objects in driverlib.a have wchar_t
+                      size 16 bits
+            gpio.o and 15 other objects, some of them in dl7M_tln.a and 11
+                      other libraries have wchar_t size 32 bits
+Warning[Ls016]: [stack usage analysis] the program contains at least one
+          indirect call. Example: from "UARTwrite". A complete list of such
+          functions is in the map file.
+
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+__dlib_version  = 6
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The basic heap was selected because no calls to memory allocation
+functions were found in the application outside of system library
+functions, and there are calls to deallocation functions in the
+application.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at address 0x0 { ro section .intvec };
+"P1":  place in [from 0x0 to 0x3'ffff] { ro };
+define block CSTACK with size = 4K, alignment = 8 { };
+define block HEAP with size = 8K, alignment = 8 { };
+"P2":  place in [from 0x2000'0000 to 0x2000'7fff] {
+          rw, block CSTACK, block HEAP };
+initialize by copy { rw };
+
+  Section            Kind         Address    Size  Object
+  -------            ----         -------    ----  ------
+"A0":                                        0x40
+  .intvec            ro code          0x0    0x40  vector_table_M.o [5]
+                                   - 0x40    0x40
+
+"P1":                                      0x1f68
+  .text              ro code         0x40   0x9a4  main.o [1]
+  .text              ro code        0x9e4   0x1b0  gpio.o [1]
+  .text              ro code        0xb94   0x488  gpio.o [3]
+  .text              ro code       0x101c   0x19c  timer.o [3]
+  .text              ro code       0x11b8   0x272  uartstdio.o [1]
+  .text              ro code       0x142a    0x3a  zero_init3.o [5]
+  .text              ro code       0x1464   0x4c8  sysctl.o [3]
+  .text              ro code       0x192c   0x170  interrupt.o [3]
+  .text              ro code       0x1a9c   0x19c  uart.o [3]
+  .text              ro code       0x1c38    0x1c  systick.o [3]
+  .text              ro code       0x1c54     0xc  cpu.o [3]
+  .rodata            const         0x1c60    0x30  main.o [1]
+  .text              ro code       0x1c90    0x2e  copy_init3.o [5]
+  .text              ro code       0x1cbe     0x2  vector_table_M.o [5]
+  .text              ro code       0x1cc0    0x28  data_init.o [5]
+  .text              ro code       0x1ce8    0x22  fpinit_M.o [4]
+  .iar.init_table    const         0x1d0c    0x24  - Linker created -
+  .rodata            const         0x1d30    0x20  main.o [1]
+  .text              ro code       0x1d50    0x1e  cmain.o [5]
+  .text              ro code       0x1d6e     0x4  low_level_init.o [2]
+  .text              ro code       0x1d72     0x4  exit.o [2]
+  .text              ro code       0x1d78     0xa  cexit.o [5]
+  .text              ro code       0x1d84    0x14  exit.o [6]
+  .rodata            const         0x1d98    0x1c  main.o [1]
+  .rodata            const         0x1db4    0x1c  main.o [1]
+  .rodata            const         0x1dd0    0x18  main.o [1]
+  .rodata            const         0x1de8    0x18  main.o [1]
+  .rodata            const         0x1e00    0x18  main.o [1]
+  .rodata            const         0x1e18    0x18  main.o [1]
+  .rodata            const         0x1e30    0x18  main.o [1]
+  .rodata            const         0x1e48    0x14  main.o [1]
+  .rodata            const         0x1e5c    0x14  main.o [1]
+  .rodata            const         0x1e70    0x14  main.o [1]
+  .rodata            const         0x1e84    0x14  uartstdio.o [1]
+  .rodata            const         0x1e98    0x10  main.o [1]
+  .rodata            const         0x1ea8    0x10  main.o [1]
+  .rodata            const         0x1eb8    0x10  main.o [1]
+  .rodata            const         0x1ec8    0x10  main.o [1]
+  .rodata            const         0x1ed8    0x10  main.o [1]
+  .rodata            const         0x1ee8    0x10  main.o [1]
+  .rodata            const         0x1ef8    0x10  main.o [1]
+  .rodata            const         0x1f08    0x10  main.o [1]
+  .rodata            const         0x1f18    0x10  main.o [1]
+  .rodata            const         0x1f28    0x10  main.o [1]
+  .rodata            const         0x1f38     0xc  main.o [1]
+  .rodata            const         0x1f44     0xc  main.o [1]
+  .rodata            const         0x1f50     0xc  main.o [1]
+  .rodata            const         0x1f5c     0xc  main.o [1]
+  .rodata            const         0x1f68     0xc  uartstdio.o [1]
+  .rodata            const         0x1f74     0xc  uartstdio.o [1]
+  .text              ro code       0x1f80     0xc  cstartup_M.o [5]
+  .rodata            const         0x1f8c     0x8  main.o [1]
+  .rodata            const         0x1f94     0x8  uartstdio.o [1]
+  Initializer bytes  const         0x1f9c     0x8  <for P2-1>
+  .rodata            const         0x1fa4     0x4  uartstdio.o [1]
+  .rodata            const         0x1fa8     0x0  zero_init3.o [5]
+  .rodata            const         0x1fa8     0x0  copy_init3.o [5]
+                                 - 0x1fa8  0x1f68
+
+"P2", part 1 of 3:                            0x8
+  P2-1                        0x2000'0000     0x5  <Init block>
+    .data            inited   0x2000'0000     0x4  main.o [1]
+    .data            inited   0x2000'0004     0x1  main.o [1]
+                            - 0x2000'0005     0x5
+
+"P2", part 2 of 3:                          0x66c
+  VTABLE             zero     0x2000'0400   0x26c  interrupt.o [3]
+  .bss               zero     0x2000'066c     0x4  main.o [1]
+  .bss               zero     0x2000'0670     0x4  uartstdio.o [1]
+                            - 0x2000'0674   0x66c
+
+"P2", part 3 of 3:                         0x1000
+  CSTACK                      0x2000'0678  0x1000  <Block>
+    CSTACK           uninit   0x2000'0678  0x1000  <Block tail>
+                            - 0x2000'1678  0x1000
+
+Unused ranges:
+
+         From           To      Size
+         ----           --      ----
+       0x1fa8     0x3'ffff  0x3'e058
+  0x2000'0674  0x2000'0677       0x4
+  0x2000'1678  0x2000'7fff    0x6988
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address      Size
+          -------      ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x274:
+          0x2000'0400  0x274
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x8 (160% of destination):
+               0x1f9c    0x8
+    1 destination range, total size 0x5:
+          0x2000'0000    0x5
+
+
+*******************************************************************************
+*** STACK USAGE
+***
+
+  Call Graph Root Category  Max Use  Total Use
+  ------------------------  -------  ---------
+  interrupt                      0          0
+  Program entry                 96         96
+  Uncalled function            120        504
+
+
+Program entry
+  "__iar_program_start": 0x1f81
+
+  Maximum call chain                            *?* 96  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "__iar_program_start"                            0
+    "__cmain"                                        0
+    "main"                                           8
+    "WELCOME"                                        8
+    "MICROWAVEIDLE"                                  8
+    "UARTprintf"                                    16
+    "UARTvprintf"                                   40
+    "UARTwrite"                                     16
+
+interrupt
+  "__default_handler" in vector_table_M.o [5]: 0x1cbf
+
+  Maximum call chain                                0  bytes
+
+    "__default_handler" in vector_table_M.o [5]     0
+
+Uncalled function
+  "GPIO_HANDLER": 0xd7
+
+  Maximum call chain                            *?* 88  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "GPIO_HANDLER"                                   8
+    "MICROWAVESTART"                                 8
+    "UARTprintf"                                    16
+    "UARTvprintf"                                   40
+    "UARTwrite"                                     16
+
+Uncalled function
+  "KEYPAD_HANDLER": 0x125
+
+  Maximum call chain                            *?* 104  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "KEYPAD_HANDLER"                                 16
+    "PAUSE"                                           8
+    "MICROWAVEIDLE"                                   8
+    "UARTprintf"                                     16
+    "UARTvprintf"                                    40
+    "UARTwrite"                                      16
+
+Uncalled function
+  "TIMER0A_HANDLER": 0x721
+
+  Maximum call chain                            *?* 96  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "TIMER0A_HANDLER"                                8
+    "ENDSEQUENCE"                                    8
+    "MICROWAVEIDLE"                                  8
+    "UARTprintf"                                    16
+    "UARTvprintf"                                   40
+    "UARTwrite"                                     16
+
+Uncalled function
+  "TIMER1A_HANDLER": 0x6f5
+
+  Maximum call chain                            *?* 96  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "TIMER1A_HANDLER"                                8
+    "STOP"                                           8
+    "CLEART"                                         8
+    "UARTprintf"                                    16
+    "UARTvprintf"                                   40
+    "UARTwrite"                                     16
+
+Uncalled function
+  "UARTIntHandler": 0x795
+
+  Maximum call chain                            *?* 120  bytes
+    (** call graph contains indirect calls (example: "UARTwrite") **)
+
+    "UARTIntHandler"                                 32
+    "PAUSE"                                           8
+    "MICROWAVEIDLE"                                   8
+    "UARTprintf"                                     16
+    "UARTvprintf"                                    40
+    "UARTwrite"                                      16
+
+The following functions perform unknown indirect calls:
+
+  "UARTStdioConfig": 0x11b9
+  "UARTwrite": 0x120f
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module            ro code  ro data  rw data
+    ------            -------  -------  -------
+command line/config:
+    -------------------------------------------
+    Total:
+
+C:\Users\Pc-george\Documents\IAR Systems\Final-Project-CSE318-ASU-CHEP\Debug\Obj: [1]
+    gpio.o                432
+    main.o              2'468      537        9
+    uartstdio.o           626       56        4
+    -------------------------------------------
+    Total:              3'526      593       13
+
+dl7M_tln.a: [2]
+    exit.o                  4
+    low_level_init.o        4
+    -------------------------------------------
+    Total:                  8
+
+driverlib.a: [3]
+    cpu.o                  12
+    gpio.o              1'160
+    interrupt.o           368               620
+    sysctl.o            1'224
+    systick.o              28
+    timer.o               412
+    uart.o                412
+    -------------------------------------------
+    Total:              3'616               620
+
+m7M_tls.a: [4]
+    fpinit_M.o             34
+    -------------------------------------------
+    Total:                 34
+
+rt7M_tl.a: [5]
+    cexit.o                10
+    cmain.o                30
+    copy_init3.o           46
+    cstartup_M.o           12
+    data_init.o            40
+    vector_table_M.o       66
+    zero_init3.o           58
+    -------------------------------------------
+    Total:                262
+
+shb_l.a: [6]
+    exit.o                 20
+    -------------------------------------------
+    Total:                 20
+
+    Gaps                    4        2    1'016
+    Linker created                  39    4'096
+-----------------------------------------------
+    Grand Total:        7'470      634    5'745
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                       Address   Size  Type      Object
+-----                       -------   ----  ----      ------
+.iar.init_table$$Base        0x1d0c          --   Gb  - Linker created -
+.iar.init_table$$Limit       0x1d30          --   Gb  - Linker created -
+?main                        0x1d51         Code  Gb  cmain.o [5]
+ATI                           0x773   0x20  Code  Gb  main.o [1]
+CLEART                        0x445   0x14  Code  Gb  main.o [1]
+CPUcpsie                     0x1c55    0x8  Code  Gb  cpu.o [3]
+CPUwfi                       0x1c5d    0x4  Code  Gb  cpu.o [3]
+CSTACK$$Base            0x2000'0678          --   Gb  - Linker created -
+CSTACK$$Limit           0x2000'1678          --   Gb  - Linker created -
+ENDSEQUENCE                   0x489   0x5a  Code  Gb  main.o [1]
+GPIODirModeSet                0xbd5   0x28  Code  Gb  gpio.o [3]
+GPIOINIT                      0x2e9   0xf4  Code  Gb  main.o [1]
+GPIOIntClear                  0xd53    0x6  Code  Gb  gpio.o [3]
+GPIOIntDisable                0xd4d    0x6  Code  Gb  gpio.o [3]
+GPIOIntEnable                 0xd47    0x6  Code  Gb  gpio.o [3]
+GPIOIntRegister               0xd59   0x14  Code  Gb  gpio.o [3]
+GPIOIntTypeSet                0xbfd   0x4c  Code  Gb  gpio.o [3]
+GPIOPadConfigSet              0xc49   0xfe  Code  Gb  gpio.o [3]
+GPIOPinConfigure              0xd95   0x38  Code  Gb  gpio.o [3]
+GPIOPinTypeUART               0xd81   0x14  Code  Gb  gpio.o [3]
+GPIO_HANDLER                   0xd7   0x4e  Code  Gb  main.o [1]
+GRILLIDLE                     0x56d   0x44  Code  Gb  main.o [1]
+GRILLSTART                    0x5b1   0x3e  Code  Gb  main.o [1]
+IntEnable                    0x1987   0x56  Code  Gb  interrupt.o [3]
+IntMasterEnable              0x192d    0x8  Code  Gb  interrupt.o [3]
+IntPrioritySet               0x1963   0x24  Code  Gb  interrupt.o [3]
+IntRegister                  0x193d   0x26  Code  Gb  interrupt.o [3]
+KEYPAD_HANDLER                0x125  0x1b4  Code  Gb  main.o [1]
+MICROWAVEIDLE                 0x4e3   0x44  Code  Gb  main.o [1]
+MICROWAVESTART                0x527   0x46  Code  Gb  main.o [1]
+PAUSE                         0x3dd   0x32  Code  Gb  main.o [1]
+Region$$Table$$Base          0x1d0c          --   Gb  - Linker created -
+Region$$Table$$Limit         0x1d30          --   Gb  - Linker created -
+SECONDS                 0x2000'0000    0x4  Data  Gb  main.o [1]
+STOP                          0x40f   0x36  Code  Gb  main.o [1]
+State                   0x2000'0004    0x1  Data  Gb  main.o [1]
+SysCtlClockFreqSet           0x14ad  0x204  Code  Gb  sysctl.o [3]
+SysCtlDelay                  0x14a5    0x8  Code  Gb  sysctl.o [3]
+SysCtlPeripheralEnable       0x1485    0x8  Code  Gb  sysctl.o [3]
+SysCtlSleep                  0x14a1    0x4  Code  Gb  sysctl.o [3]
+SysTickEnable                0x1c39    0xc  Code  Gb  systick.o [3]
+SysTickPeriodSet             0x1c45    0x8  Code  Gb  systick.o [3]
+TIMER0AINIT                   0x5ef   0x50  Code  Gb  main.o [1]
+TIMER0A_HANDLER               0x721   0x52  Code  Gb  main.o [1]
+TIMER1AINIT                   0x63f   0x4e  Code  Gb  main.o [1]
+TIMER1A_HANDLER               0x6f5   0x2a  Code  Gb  main.o [1]
+TimerConfigure               0x1077   0x52  Code  Gb  timer.o [3]
+TimerDisable                 0x106b    0xc  Code  Gb  timer.o [3]
+TimerEnable                  0x105f    0xc  Code  Gb  timer.o [3]
+TimerIntClear                0x1115    0x4  Code  Gb  timer.o [3]
+TimerIntEnable               0x1103    0x4  Code  Gb  timer.o [3]
+TimerIntRegister             0x10e9   0x1a  Code  Gb  timer.o [3]
+TimerLoadSet                 0x10d9   0x10  Code  Gb  timer.o [3]
+UARTCharGetNonBlocking       0x1b7b    0xe  Code  Gb  uart.o [3]
+UARTCharsAvail               0x1b6b    0x6  Code  Gb  uart.o [3]
+UARTConfigSetExpClk          0x1acf   0x4c  Code  Gb  uart.o [3]
+UARTDisable                  0x1b35   0x1e  Code  Gb  uart.o [3]
+UARTEnable                   0x1b1b   0x1a  Code  Gb  uart.o [3]
+UARTINIT                      0x68d   0x68  Code  Gb  main.o [1]
+UARTIntClear                 0x1bb3    0x4  Code  Gb  uart.o [3]
+UARTIntEnable                0x1ba3    0x6  Code  Gb  uart.o [3]
+UARTIntHandler                0x795  0x166  Code  Gb  main.o [1]
+UARTIntRegister              0x1b89   0x1a  Code  Gb  uart.o [3]
+UARTIntStatus                0x1ba9    0xa  Code  Gb  uart.o [3]
+UARTStdioConfig              0x11b9   0x56  Code  Gb  uartstdio.o [1]
+UARTprintf                   0x141d    0xe  Code  Gb  uartstdio.o [1]
+UARTvprintf                  0x1245  0x1b6  Code  Gb  uartstdio.o [1]
+UARTwrite                    0x120f   0x36  Code  Gb  uartstdio.o [1]
+WELCOME                       0x459   0x30  Code  Gb  main.o [1]
+_GPIOIntNumberGet             0xb95   0x40  Code  Lc  gpio.o [3]
+_SysCtlMemTimingGet          0x1465   0x20  Code  Lc  sysctl.o [3]
+_TimerIntNumberGet           0x101d   0x42  Code  Lc  timer.o [3]
+_UARTIntNumberGet            0x1a9d   0x32  Code  Lc  uart.o [3]
+__cmain                      0x1d51         Code  Gb  cmain.o [5]
+__exit                       0x1d85   0x14  Code  Gb  exit.o [6]
+__iar_copy_init3             0x1c91   0x2e  Code  Gb  copy_init3.o [5]
+__iar_data_init3             0x1cc1   0x28  Code  Gb  data_init.o [5]
+__iar_init_vfp               0x1ce9         Code  Gb  fpinit_M.o [4]
+__iar_program_start          0x1f81         Code  Gb  cstartup_M.o [5]
+__iar_zero_init3             0x142b   0x3a  Code  Gb  zero_init3.o [5]
+__low_level_init             0x1d6f    0x4  Code  Gb  low_level_init.o [2]
+__vector_table                  0x0         Data  Gb  vector_table_M.o [5]
+_call_main                   0x1d5d         Code  Gb  cmain.o [5]
+_exit                        0x1d79         Code  Gb  cexit.o [5]
+_main                        0x1d6b         Code  Gb  cmain.o [5]
+delay_ms                      0x2d9   0x10  Code  Gb  main.o [1]
+exit                         0x1d73    0x4  Code  Gb  exit.o [2]
+g_pcHex                      0x1fa4    0x4  Data  Lc  uartstdio.o [1]
+g_pfnRAMVectors         0x2000'0400  0x26c  Data  Lc  interrupt.o [3]
+g_pppui32XTALtoVCO           0x1744  0x1b0  Data  Lc  sysctl.o [3]
+g_ppui32GPIOIntMapBlizzard
+                              0xdf4   0xc0  Data  Lc  gpio.o [3]
+g_ppui32GPIOIntMapSnowflake
+                              0xeb4   0xd8  Data  Lc  gpio.o [3]
+g_ppui32TimerIntMap          0x1118   0x60  Data  Lc  timer.o [3]
+g_ppui32TimerIntMapSnowflake
+                             0x1178   0x40  Data  Lc  timer.o [3]
+g_ppui32UARTIntMap           0x1bb8   0x40  Data  Lc  uart.o [3]
+g_ppui32UARTIntMapSnowflake
+                             0x1bf8   0x40  Data  Lc  uart.o [3]
+g_pui32EnRegs                0x1a88   0x14  Data  Lc  interrupt.o [3]
+g_pui32GPIOBaseAddrs          0xf8c   0x90  Data  Lc  gpio.o [3]
+g_pui32Regs                  0x19ec   0x9c  Data  Lc  interrupt.o [3]
+g_pui32VCOFrequencies        0x1924    0x8  Data  Lc  sysctl.o [3]
+g_pui32Xtals                 0x16d8   0x6c  Data  Lc  sysctl.o [3]
+g_sXTALtoMEMTIM              0x18f4   0x30  Data  Lc  sysctl.o [3]
+g_ui32Base              0x2000'0670    0x4  Data  Lc  uartstdio.o [1]
+g_ui32SysClock          0x2000'066c    0x4  Data  Gb  main.o [1]
+g_ui32UARTBase               0x1f68    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTPeriph             0x1f74    0xc  Data  Lc  uartstdio.o [1]
+keypad_scanner                 0x41   0x96  Code  Gb  main.o [1]
+main                          0x8fb   0x38  Code  Gb  main.o [1]
+pinmode                       0x9e5   0xe6  Code  Gb  gpio.o [1]
+pinread                       0xb33   0x3c  Code  Gb  gpio.o [1]
+pinwrite                      0xacb   0x68  Code  Gb  gpio.o [1]
+
+
+[1] = C:\Users\Pc-george\Documents\IAR Systems\Final-Project-CSE318-ASU-CHEP\Debug\Obj
+[2] = dl7M_tln.a
+[3] = driverlib.a
+[4] = m7M_tls.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+  7'470 bytes of readonly  code memory
+    634 bytes of readonly  data memory
+  5'745 bytes of readwrite data memory
+
+Errors: none
+Warnings: 2

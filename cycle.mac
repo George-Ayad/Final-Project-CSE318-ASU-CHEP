@@ -1,0 +1,18 @@
+__var t1;
+__var t2;
+__var t3;
+__var res;
+
+Dump2( ){
+    t1 = #SYST_CVR;
+     __message "cycles1=", #SYST_CVR;
+}
+ 
+Dump( ){
+    t2 = #SYST_CVR;
+    t3 = t1-t2;
+    res = t3 * 63;
+  __message "cycles2=", #SYST_CVR;
+  __message "cycles elapsed=", t3;
+  __message "time elapsed=", res, " ns";
+}
