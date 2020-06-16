@@ -10,7 +10,6 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/timer.h"
 #include "driverlib/systick.h"
-//#include "drivers/pinout.h"
 #include "inc/hw_ints.h"
 #include "inc/hw_nvic.h"
 #include "gpio.h" 
@@ -57,18 +56,18 @@ char keypad_scanner(void)  {
 	pinwrite(PB2, LOW);
 	pinwrite(PB3, HIGH);
 
-	if (pinread(PB4) == 0) { UARTprintf("1 \n"); return '1'; }
-	if (pinread(PB5) == 0) { UARTprintf("2 \n"); return '2'; }
-	if (pinread(PB6) == 0) { UARTprintf("3 \n"); return '3'; }
-	if (pinread(PB7) == 0) { UARTprintf("4 \n"); return '4'; }
+	if (pinread(PB4) == 0) {return '1'; }
+	if (pinread(PB5) == 0) {return '2'; }
+	if (pinread(PB6) == 0) {return '3'; }
+	if (pinread(PB7) == 0) {return '4'; }
 	
 	pinwrite(PB2, HIGH);
 	pinwrite(PB3, LOW);
 
-	if (pinread(PB4) == 0) { UARTprintf("5 \n"); return '5'; }
-	if (pinread(PB5) == 0) { UARTprintf("6 \n"); return '6'; }
-	if (pinread(PB6) == 0) { UARTprintf("7 \n"); return '7'; }
-	if (pinread(PB7) == 0) { UARTprintf("8 \n"); return '8'; }
+	if (pinread(PB4) == 0) {return '5'; }
+	if (pinread(PB5) == 0) {return '6'; }
+	if (pinread(PB6) == 0) {return '7'; }
+	if (pinread(PB7) == 0) {return '8'; }
 	
 	return('\0');
 }
@@ -77,30 +76,57 @@ char keypad_scanner(void)  {
 void GPIO_HANDLER(void){
 	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_0);
 	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_4);
-	if (pinread(PushButton1) == 1) {
+	if (pinread(PushButton1) == 0) {
 		if(State=='g'){GRILLSTART();}
 		if(State=='m'){MICROWAVESTART();}
 	}
-	if (pinread(PushButton2) == 1) {
+	if (pinread(PushButton2) == 0) {
 		TimerEnable(TIMER1_BASE, TIMER_A); 
 	}
 }
 
 
 void KEYPAD_HANDLER(void){
+	GPIOIntDisable(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
+	GPIOIntDisable(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
+	GPIOIntDisable(GPIO_PORTB_BASE,GPIO_INT_PIN_6);
+	GPIOIntDisable(GPIO_PORTB_BASE,GPIO_INT_PIN_7);
 	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
 	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
 	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_6);
 	GPIOIntClear(GPIO_PORTB_BASE,GPIO_INT_PIN_7);
+	
 	char AA = '5';
 	AA = keypad_scanner();
-	if(AA == '1'){SECONDS+=10;UARTprintf("SECONDS = %d ", SECONDS);}// 10 SECONDS
-	if(AA == '2'){SECONDS+=60;UARTprintf("SECONDS = %d ", SECONDS);}// 1 MINUTE
-	if(AA == '3'){SECONDS+=1800;UARTprintf("SECONDS = %d ", SECONDS);}// 30 MINUTES
-	if(AA == '4'){if(State=='m')MICROWAVESTART();if(State=='g')GRILLSTART();}
-	if(AA == '5'){MICROWAVEIDLE();}// MICROWAVE IDLE
-	if(AA == '6'){GRILLIDLE();}// GRILL IDLE 
-	if(AA == '8'){if(State=='m' || State=='g')STOP();if(State=='M' || State=='G')PAUSE();}   
+	
+	if(State == 'm' || State == 'g'){
+		if(AA == '1'){SECONDS+=10;UARTprintf("SECONDS = %d ", SECONDS);}// 10 SECONDS
+		if(AA == '2'){SECONDS+=60;UARTprintf("SECONDS = %d ", SECONDS);}// 1 MINUTE
+		if(AA == '3'){SECONDS+=1800;UARTprintf("SECONDS = %d ", SECONDS);}// 30 MINUTES
+		if(AA == '4'){if(State=='m')MICROWAVESTART();if(State=='g')GRILLSTART();}
+		if(AA == '5'){MICROWAVEIDLE();}// MICROWAVE IDLE
+		if(AA == '6'){GRILLIDLE();}// GRILL IDLE 
+		if(AA == '8'){if(State=='m' || State=='g')STOP();if(State=='M' || State=='G')PAUSE();}
+	}
+	
+	if(State == 'M' || State == 'G'){
+		if(AA == '1'){SECONDS+=10;UARTprintf("SECONDS = %d ", SECONDS);}// 10 SECONDS
+		if(AA == '2'){SECONDS+=60;UARTprintf("SECONDS = %d ", SECONDS);}// 1 MINUTE
+		if(AA == '3'){SECONDS+=1800;UARTprintf("SECONDS = %d ", SECONDS);}// 30 MINUTES
+		//if(AA == '4'){if(State=='m')MICROWAVESTART();if(State=='g')GRILLSTART();}
+		//if(AA == '5'){MICROWAVEIDLE();}// MICROWAVE IDLE
+		//if(AA == '6'){GRILLIDLE();}// GRILL IDLE 
+		if(AA == '8'){PAUSE();}
+	}
+	
+	pinwrite(PB2, LOW);
+	pinwrite(PB3, LOW);
+	delay_ms(100);
+	
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_4);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_5);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_6);
+	GPIOIntEnable(GPIO_PORTB_BASE,GPIO_INT_PIN_7);
 }
 
 
@@ -158,7 +184,7 @@ void PAUSE(){
 
 
 void STOP(){
-	UARTprintf("Stopped \n");
+	UARTprintf("     Stopped \n");
 	if(State == 'M')MICROWAVEIDLE();
 	if(State == 'G')GRILLIDLE();
 	UARTprintf("Remaining Time = %d ", SECONDS);
@@ -261,10 +287,10 @@ void TIMER0AINIT(){
 void TIMER1AINIT(){
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
 	TimerConfigure(TIMER1_BASE, TIMER_CFG_PERIODIC);
-	TimerLoadSet(TIMER1_BASE, TIMER_A, g_ui32SysClock*3);
+	TimerLoadSet(TIMER1_BASE, TIMER_A, 16000000*3);
 	IntEnable(INT_TIMER1A);
 	TimerIntEnable(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
-	IntPrioritySet( INT_TIMER1A , 4);
+	IntPrioritySet( INT_TIMER1A , 1);
 	IntRegister( INT_TIMER1A , TIMER1A_HANDLER);
 	TimerIntRegister( INT_TIMER1A, TIMER_A, TIMER1A_HANDLER);  
 }
@@ -292,7 +318,9 @@ void UARTINIT(){
 
 
 void TIMER1A_HANDLER(){
-	if(pinread(PushButton2) == 1){
+	TimerIntClear(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
+	TimerDisable(TIMER1_BASE, TIMER_A);
+	if(pinread(PushButton2) == 0){
 		STOP();
 		UARTprintf("TIMER CLEARED \n");
 	}
@@ -354,7 +382,7 @@ void UARTIntHandler(void){
 		}
 	}
 	pc[i] = '\0' ;
-	UARTprintf("wsl b salam ya s3at el basha : %s \n", pc);
+	// UARTprintf("Recieved : %s \n", pc);
 
 	// State based action decision tree
 	if(State == 'M'){
@@ -362,42 +390,38 @@ void UARTIntHandler(void){
 		if( pc[0] == 'P' ){
 			// Pause
 			PAUSE();
-			MICROWAVEIDLE();
 		}
 
 		else if( pc[0] == 'S' ){
 			// Stop
 			STOP();
-			MICROWAVEIDLE();
 		}
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft \n");
+			UARTprintf("Wrong Entry ! \n");
 		}
 	}
 
-	if(State == 'G'){
+	else if(State == 'G'){
 		// Grill active
 		if( pc[0] == 'P' ){
 			// Pause
 			PAUSE();
-			GRILLIDLE();
 		}
 		
 		else if( pc[0] == 'S' ){
 			// Stop
 			STOP();
-			GRILLIDLE();
 		}
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft \n");
+			UARTprintf("Wrong Entry !t \n");
 		}
 	}
 
-	if(State == 'm'){
+	else if(State == 'm'){
 		// Microwave Idle
 		if(pc[0] <= '9'  && pc[0] >= '0' ){
 			// Timer adjust
@@ -427,11 +451,11 @@ void UARTIntHandler(void){
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft \n");
+			UARTprintf("Wrong Entry ! \n");
 		}
 	}
 
-	if(State == 'g'){
+	else if(State == 'g'){
 		// Grill idle 
 		if(pc[0] <= '9'  && pc[0] >= '0' ){
 			// Timer adjust
@@ -461,7 +485,7 @@ void UARTIntHandler(void){
 
 		else{
 			// Unknown
-			UARTprintf("aktb 3edl ya zeft \n");
+			UARTprintf("Wrong Entry ! \n");
 		}
 	}
 }
@@ -475,6 +499,7 @@ int main(){
 	// ---------- INITIALIZATIONS ----------
 	IntMasterEnable();
 	TIMER0AINIT();
+	TIMER1AINIT();
 	UARTINIT();
 	GPIOINIT();
 	
