@@ -94,17 +94,6 @@ datasheet = 17.6 , and sleep current from datasheet = 11.8 at all peripherals on
 ##### Sleep Power =3.3*11.8=38.94mW
 
 
-
-## Files submitted
-main.c
-gpio.h
-gpio.c
-tm4c123gh6pm.h
-Final-Project-CSE318-ASU-CHEP.map
-Finite State Machine Diagram.pdf
-Cycle.mac
-Video.m4v
-
 ## Links
 ### Github Repo:
 https://github.com/George-Ayad/Final-Project-CSE318-ASU-CHEP
