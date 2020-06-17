@@ -48,7 +48,7 @@ Keypad_scanner ():
 
 ## Finite state machine diagram
 
-![alt text](http://url/to/img.png)
+![Finite state machine diagram](https://github.com/George-Ayad/Final-Project-CSE318-ASU-CHEP/blob/master/Finite%20State%20Machine%20Diagram.png?raw=true)
 
 
 ## Non-functional merits
